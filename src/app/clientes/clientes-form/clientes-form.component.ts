@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Cliente } from '../cliente';
 import { ClientesService } from 'src/app/clientes.service';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs';
+import { Params } from '@angular/router';
 
 @Component({
   selector: 'app-clientes-form',
@@ -12,25 +15,62 @@ export class ClientesFormComponent implements OnInit {
   cliente: Cliente;
   success: boolean;
   errors: string[];
+  id: number;
 
-  constructor(private service:ClientesService ) {
+  constructor(private service:ClientesService,
+              private router: Router,
+              private activatedRoute: ActivatedRoute ) {
     this.cliente= new Cliente();
    }
 
   ngOnInit(): void {
+    let params: Observable<Params> = this.activatedRoute.params;
+
+    params.subscribe( urlParams =>{
+      this.id = urlParams['id'];
+      if(this.id){
+        this.service.getClientesById(this.id)
+                  .subscribe(response => {
+                    this.cliente = response;
+                  },
+                  errorResponse => {
+                    this.cliente = new Cliente();
+                  });
+      }
+
+    });
   }
 
   onSubmit(){
-    this.service.salvar(this.cliente)
-      .subscribe( response => {
-        this.success = true;
-        this.errors = [];
-        this.cliente = response;
-      }, errorResponse => {
-        this.success = false;
-        this.errors = errorResponse.error.errors;
-      }
-          );
+
+    if(this.id){
+      this.service.atualizar(this.cliente)
+        .subscribe( response => {
+          this.success = true;
+          this.errors = [];
+        }, errorResponse => {
+          this.success = false;
+          this.errors = ['Erro ao atualizar o cliente.'];
+          this.errors.push(errorResponse.error.errors);
+        }
+      );
+    }
+    else{
+      this.service.salvar(this.cliente)
+        .subscribe( response => {
+          this.success = true;
+          this.errors = [];
+          this.cliente = response;
+        }, errorResponse => {
+          this.success = false;
+          this.errors = errorResponse.error.errors;
+        }
+      );
+    }
+  }
+
+  voltarParaListagem():void{
+    this.router.navigate(['/clientes-lista']);
   }
 
 }
