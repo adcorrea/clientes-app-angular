@@ -11,6 +11,7 @@ import { HttpClientModule } from '@angular/common/http'
 import { HomeComponent } from './home/home.component';
 
 import {ClientesService} from './clientes.service'
+import { ServicoPrestadoModule } from './servico-prestado/servico-prestado.module';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import {ClientesService} from './clientes.service'
     HttpClientModule,
     AppRoutingModule,
     TemplateModule,
-    ClientesModule    
+    ClientesModule,
+    ServicoPrestadoModule    
   ],
   providers: [
     ClientesService
