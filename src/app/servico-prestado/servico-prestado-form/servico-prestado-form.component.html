@@ -3,6 +3,16 @@
     <li class="breadcrumb-item active">Novo</li>
 </ol>
 <div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-success" role="alert" *ngIf="success == true">
+                Serviço salvo/atualizado com sucesso!
+            </div>
+            <div class="alert alert-danger" role="alert" *ngFor="let error of errors">
+                {{ error }}
+            </div>
+        </div>
+    </div>
     <form #form="ngForm" (submit)="onSubmit()">
         <div class="row">
             <div class="col-md-12">
@@ -45,6 +55,10 @@
                 <button type="submit" class="btn btn-success">
                 <i class="fa fa-save"></i>
                 Salvar</button>
+
+                <button type="button" class="btn btn-danger ml-1" routerLink="/servico-prestado-listagem">
+                    <i class="fa fa-arrow-alt-circle-left"></i> Voltar
+                </button>
             </div>
         </div>
     </form>
